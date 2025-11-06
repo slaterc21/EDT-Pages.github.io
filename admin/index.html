@@ -978,6 +978,23 @@
             box-shadow: 0 4px 15px rgba(8, 145, 178, 0.3) !important;
         }
 
+        html.dark-mode .btn-mode-toggle {
+            background: #f3f4f6;
+            color: #1f2937;
+            box-shadow: 0 4px 15px rgba(243, 244, 246, 0.3);
+        }
+
+        html.dark-mode .btn-mode-toggle:hover {
+            background: #e5e7eb;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(243, 244, 246, 0.4);
+        }
+
+        html.dark-mode .btn-mode-toggle:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 10px rgba(243, 244, 246, 0.3);
+        }
+
         html.dark-mode .checkbox-group input[type="checkbox"] {
             border-color: var(--border-color);
             background: var(--input-bg)
@@ -1396,6 +1413,24 @@
         }
 
         /* 自定义按钮样式 */
+        .btn-mode-toggle {
+            background: #1f2937;
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(31, 41, 55, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .btn-mode-toggle:hover {
+            background: #111827;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(31, 41, 55, 0.5);
+        }
+
+        .btn-mode-toggle:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 10px rgba(31, 41, 55, 0.4);
+        }
+
         .btn-reset {
             background: linear-gradient(135deg, #ef4444 0, #dc2626 100%);
             color: #fff;
@@ -1801,6 +1836,11 @@
         /* 隐藏元素 */
         .hidden-section {
             display: none;
+        }
+
+        /* 简单模式 - 隐藏高级模块 */
+        .simple-mode .advanced-module {
+            display: none !important;
         }
 
         /* Cloudflare 配置部分样式 */
@@ -3142,6 +3182,7 @@
                     <h1 id="pageTitle">加载中...</h1>
                 </div>
                 <div class="header-buttons">
+                    <button type="button" class="btn btn-mode-toggle" id="modeToggleBtn" onclick="toggleUserMode()">我是小白！别搞这么复杂！</button>
                     <button type="button" class="btn btn-danger btn-reset"
                         onclick="resetConfigWithConfirm()">⚠️重置配置</button>
                     <button type="button" class="btn btn-primary" onclick="logout()">👋退出登录</button>
@@ -3392,7 +3433,7 @@ https://raw.githubusercontent.com/cmliu/WorkerVless2sub/main/addressesapi.txt"
             </div>
 
             <!-- 模块3: 详细配置信息 -->
-            <div class="module collapsed">
+            <div class="module collapsed advanced-module">
                 <div class="module-title" onclick="toggleModule(this)">
                     ⚙️ 详细配置信息
                     <svg class="collapse-icon" viewBox="0 0 24 24">
@@ -3454,7 +3495,7 @@ https://raw.githubusercontent.com/cmliu/WorkerVless2sub/main/addressesapi.txt"
             </div>
 
             <!-- 模块4: 反代落地设置 -->
-            <div class="module collapsed">
+            <div class="module collapsed advanced-module">
                 <div class="module-title" onclick="toggleModule(this)">
                     🌐 Cloudflare CDN 访问设置
                     <svg class="collapse-icon" viewBox="0 0 24 24">
@@ -3538,7 +3579,7 @@ https://raw.githubusercontent.com/cmliu/WorkerVless2sub/main/addressesapi.txt"
             </div>
 
             <!-- 模块5: 订阅转换配置 -->
-            <div class="module collapsed">
+            <div class="module collapsed advanced-module">
                 <div class="module-title" onclick="toggleModule(this)">
                     🔄 订阅转换配置
                     <svg class="collapse-icon" viewBox="0 0 24 24">
@@ -3583,7 +3624,7 @@ https://raw.githubusercontent.com/cmliu/WorkerVless2sub/main/addressesapi.txt"
             </div>
 
             <!-- 模块6: 消息通知设置 -->
-            <div class="module collapsed">
+            <div class="module collapsed advanced-module">
                 <div class="module-title" onclick="toggleModule(this)">
                     🔔 消息通知设置
                     <svg class="collapse-icon" viewBox="0 0 24 24">
@@ -3635,7 +3676,7 @@ https://raw.githubusercontent.com/cmliu/WorkerVless2sub/main/addressesapi.txt"
             </div>
 
             <!-- 模块7: 查看所有日志 -->
-            <div class="module collapsed">
+            <div class="module collapsed advanced-module">
                 <div class="module-title" onclick="toggleModule(this); loadLogsOnExpand(this)">
                     📋 查看操作日志
                     <svg class="collapse-icon" viewBox="0 0 24 24">
@@ -5032,6 +5073,41 @@ https://raw.githubusercontent.com/cmliu/WorkerVless2sub/main/addressesapi.txt"
 
         function logout() {
             window.location.href = '/logout';
+        }
+
+        // 切换用户模式（小白模式 / 高手模式）
+        function toggleUserMode() {
+            const cardContainer = document.querySelector('.card-container');
+            const btn = document.getElementById('modeToggleBtn');
+            
+            if (cardContainer.classList.contains('simple-mode')) {
+                // 切换到高手模式
+                cardContainer.classList.remove('simple-mode');
+                btn.textContent = '我是小白！别搞这么复杂！';
+                localStorage.setItem('userMode', 'expert');
+                showToast('已切换到高手模式，显示所有功能', 'success');
+            } else {
+                // 切换到小白模式
+                cardContainer.classList.add('simple-mode');
+                btn.textContent = '我是高手！我就是要折腾！';
+                localStorage.setItem('userMode', 'simple');
+                showToast('已切换到小白模式，只显示常用功能', 'success');
+            }
+        }
+
+        // 初始化用户模式
+        function initUserMode() {
+            const userMode = localStorage.getItem('userMode') || 'simple'; // 默认为小白模式
+            const cardContainer = document.querySelector('.card-container');
+            const btn = document.getElementById('modeToggleBtn');
+            
+            if (userMode === 'simple') {
+                cardContainer.classList.add('simple-mode');
+                btn.textContent = '我是高手！我就喜欢折腾！';
+            } else {
+                cardContainer.classList.remove('simple-mode');
+                btn.textContent = '我是小白！别搞这么复杂！';
+            }
         }
 
         function showToast(message, type = 'info') {
@@ -7088,7 +7164,10 @@ https://raw.githubusercontent.com/cmliu/WorkerVless2sub/main/addressesapi.txt"
 
         // 初始化
         initializeTheme();
-        window.addEventListener('DOMContentLoaded', loadConfig);
+        window.addEventListener('DOMContentLoaded', () => {
+            loadConfig();
+            initUserMode();
+        });
 
         // 启动倒计时更新
         setInterval(updateCountdown, 1000);
