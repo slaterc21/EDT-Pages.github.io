@@ -689,13 +689,6 @@ body {
             loginBtn.classList.remove('btn-loading');
         }
     });
-    
-    // 回车键登录
-    document.getElementById('password').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            document.getElementById('loginForm').dispatchEvent(new Event('submit'));
-        }
-    });
     </script>
 </body>
 </html>
