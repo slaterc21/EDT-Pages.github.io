@@ -5400,7 +5400,7 @@ https://raw.githubusercontent.com/cmliu/WorkerVless2sub/main/addressesapi.txt"
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 5000);
                 
-                const response = await fetch(`/admin/check?${params}`, {
+                const response = await fetch(`/admin/check?${params}&_t=${Date.now()}`, {
                     method: 'GET',
                     signal: controller.signal
                 });
