@@ -1845,8 +1845,25 @@
         }
 
         /* 简单模式 - 隐藏高级模块 */
+        .advanced-module {
+            transition: opacity 0.4s ease-in-out, max-height 0.5s ease-in-out, transform 0.4s ease-in-out, margin 0.5s ease-in-out, padding 0.5s ease-in-out, border-width 0.5s ease-in-out;
+            transform-origin: top;
+            overflow: hidden;
+            max-height: 1000px; /* 设定一个足够大的最大高度 */
+            transform: scaleY(1);
+            opacity: 1;
+        }
+
         .simple-mode .advanced-module {
-            display: none !important;
+            opacity: 0;
+            max-height: 0;
+            transform: scaleY(0.95);
+            margin-top: 0;
+            margin-bottom: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            border-width: 0;
+            pointer-events: none;
         }
 
         /* Cloudflare 配置部分样式 */
@@ -3219,7 +3236,7 @@
                     <h1 id="pageTitle">加载中...</h1>
                 </div>
                 <div class="header-buttons">
-                    <button type="button" class="btn btn-mode-toggle" id="modeToggleBtn" onclick="toggleUserMode()">我是小白！别搞这么复杂！</button>
+                    <button type="button" class="btn btn-mode-toggle" id="modeToggleBtn" onclick="toggleUserMode()">🐣 我是小白！我想简单点！</button>
                     <button type="button" class="btn btn-danger btn-reset"
                         onclick="resetConfigWithConfirm()">⚠️重置配置</button>
                     <button type="button" class="btn btn-primary" onclick="logout()">👋退出登录</button>
@@ -3280,7 +3297,7 @@
             </div>
 
             <!-- 网络信息模块 -->
-            <div class="module">
+            <div class="module advanced-module">
                 <div class="module-title">
                     🌍 当前网络信息
                 </div>
@@ -3444,7 +3461,10 @@ www.visa.cn#优选域名
 [2606:4700::]:2053#IPv6
 
 API示例：
-https://raw.githubusercontent.com/cmliu/WorkerVless2sub/main/addressesapi.txt"
+https://raw.githubusercontent.com/cmliu/WorkerVless2sub/main/addressesapi.txt
+
+其他节点示例：
+vless://7b102311-43fd-4e8f-977e-8090623c101d@edt-pages.github.io:443?security=tls&type=ws&host=edt-pages.github.io&path=%2F#edgetunnel"
                             onchange="markModified('sub')"></textarea>
                     </div>
 
@@ -5120,16 +5140,21 @@ https://raw.githubusercontent.com/cmliu/WorkerVless2sub/main/addressesapi.txt"
             if (cardContainer.classList.contains('simple-mode')) {
                 // 切换到高手模式
                 cardContainer.classList.remove('simple-mode');
-                btn.textContent = '我是小白！别搞这么复杂！';
+                btn.textContent = '🐣 我是小白！我想简单点！';
                 localStorage.setItem('userMode', 'expert');
                 showToast('已切换到高手模式，显示所有功能', 'success');
             } else {
                 // 切换到小白模式
                 cardContainer.classList.add('simple-mode');
-                btn.textContent = '我是高手！我就是要折腾！';
+                btn.textContent = '🚀 我是高手！我就要折腾！';
                 localStorage.setItem('userMode', 'simple');
                 showToast('已切换到小白模式，只显示常用功能', 'success');
             }
+            
+            // 使用 requestAnimationFrame 确保动画流畅
+            requestAnimationFrame(() => {
+                void cardContainer.offsetHeight;
+            });
         }
 
         // 初始化用户模式
@@ -5140,10 +5165,10 @@ https://raw.githubusercontent.com/cmliu/WorkerVless2sub/main/addressesapi.txt"
             
             if (userMode === 'simple') {
                 cardContainer.classList.add('simple-mode');
-                btn.textContent = '我是高手！我就喜欢折腾！';
+                btn.textContent = '🚀 我是高手！我就要折腾！';
             } else {
                 cardContainer.classList.remove('simple-mode');
-                btn.textContent = '我是小白！别搞这么复杂！';
+                btn.textContent = '🐣 我是小白！我想简单点！';
             }
         }
 
