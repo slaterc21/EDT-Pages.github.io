@@ -5423,7 +5423,7 @@ vless://7b102311-43fd-4e8f-977e-8090623c101d@edt-pages.github.io:443?security=tl
                 
                 // 创建 AbortController 实现 5 秒超时
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 5000);
+                const timeoutId = setTimeout(() => controller.abort(), 12000);
                 
                 const response = await fetch(`/admin/check?${params}&_t=${Date.now()}`, {
                     method: 'GET',
@@ -5452,6 +5452,8 @@ vless://7b102311-43fd-4e8f-977e-8090623c101d@edt-pages.github.io:443?security=tl
                 } else if (data.success === true) {
                     const ip = data.ip || '未知';
                     const loc = data.loc || '未知';
+                    const responseTime = data.responseTime || 0;
+                    const responseTimeDisplay = responseTime > 0 ? `${responseTime}ms` : '未知';
                     
                     statusEl.style.background = 'linear-gradient(135deg, #10b981 0, #059669 100%)';
                     statusEl.style.padding = '16px';
@@ -5460,7 +5462,8 @@ vless://7b102311-43fd-4e8f-977e-8090623c101d@edt-pages.github.io:443?security=tl
                         <div style="line-height: 1.8;">
                             <div style="margin-bottom: 8px;">✅ <strong>代理有效</strong></div>
                             <div style="margin-bottom: 8px;">📍 落地IP: <span style="cursor: pointer; text-decoration: underline; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;" onclick="showIpDetailForProxy('${ip}')" title="点击查看IP详情">${ip} <span style="font-size: 16px;">🔍</span></span></div>
-                            <div>🌍 落地国家: <strong>${loc}</strong></div>
+                            <div style="margin-bottom: 8px;">🌍 落地国家: <strong>${loc}</strong></div>
+                            <div>⏱️ 响应时间: <strong>${responseTimeDisplay}</strong></div>
                         </div>
                     `;
                     
@@ -5478,7 +5481,7 @@ vless://7b102311-43fd-4e8f-977e-8090623c101d@edt-pages.github.io:443?security=tl
                 
                 // 判断是否为超时错误
                 if (error.name === 'AbortError') {
-                    statusEl.innerHTML = `❌ <strong>验证超时</strong><br/><small style="opacity: 0.9;">请求超过 5 秒无响应，请检查代理连接</small>`;
+                    statusEl.innerHTML = `❌ <strong>验证超时</strong><br/><small style="opacity: 0.9;">请求超过 10 秒无响应，请检查代理连接</small>`;
                 } else {
                     statusEl.innerHTML = `❌ <strong>验证失败</strong><br/><small style="opacity: 0.9;">${error.message}</small>`;
                 }
