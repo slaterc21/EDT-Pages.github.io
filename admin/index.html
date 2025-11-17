@@ -6472,7 +6472,7 @@ vless://7b102311-43fd-4e8f-977e-8090623c101d@edt-pages.github.io:443?security=tl
                 // IPv4: 例如 192.168.1.1 -> 192.*.*.1
                 const parts = ip.split('.');
                 if (parts.length === 4) {
-                    return `${parts[0]}.*.${parts[2]}.${parts[3]}`;
+                    return `${parts[0]}.*.*.${parts[3]}`;
                 }
             } else if (ip.includes(':')) {
                 // IPv6: 扩展并打码中间部分
