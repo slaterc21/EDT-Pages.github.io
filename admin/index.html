@@ -614,6 +614,16 @@
             user-select: none;
         }
 
+        .checkbox-row {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .checkbox-row .form-group {
+            margin-bottom: 0;
+        }
+
         /* 响应式设计 - 平板 */
         @media(max-width:768px) {
             .page-wrapper {
@@ -3550,12 +3560,22 @@ vless://7b102311-43fd-4e8f-977e-8090623c101d@edt-pages.github.io:443?security=tl
                     </select>
                 </div>
                 --->
-                    <div class="form-group">
-                        <label for="skipVerify">跳过证书验证</label>
-                        <div class="input-wrapper">
-                            <div class="checkbox-group">
-                                <input type="checkbox" id="skipVerify" title="跳过证书验证" onchange="markModified('config')">
-                                <label for="skipVerify" class="checkbox-label">启用</label>
+                    <div class="checkbox-row">
+                        <div class="form-group">
+                            <div class="input-wrapper">
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="skipVerify" title="跳过证书验证" onchange="markModified('config')">
+                                    <label for="skipVerify" class="checkbox-label">跳过证书验证</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="enable0RTTGroup" style="display: none;">
+                            <div class="input-wrapper">
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="enable0RTT" title="启用0-RTT" onchange="markModified('config')">
+                                    <label for="enable0RTT" class="checkbox-label">启用0-RTT</label>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -4344,6 +4364,16 @@ vless://7b102311-43fd-4e8f-977e-8090623c101d@edt-pages.github.io:443?security=tl
             //document.getElementById('transport').value = currentConfig.传输协议 || 'ws';
             document.getElementById('skipVerify').checked = currentConfig.跳过证书验证 || false;
 
+            // 检查启用0RTT字段是否存在
+            const enable0RTTGroup = document.getElementById('enable0RTTGroup');
+            const enable0RTTCheckbox = document.getElementById('enable0RTT');
+            if (currentConfig['启用0RTT'] !== undefined) {
+                enable0RTTGroup.style.display = 'block';
+                enable0RTTCheckbox.checked = currentConfig['启用0RTT'] || false;
+            } else {
+                enable0RTTGroup.style.display = 'none';
+            }
+
             // 反代落地设置
             const socksEnabled = currentConfig.反代?.SOCKS5?.启用;
             if (!socksEnabled) {
@@ -4925,6 +4955,11 @@ vless://7b102311-43fd-4e8f-977e-8090623c101d@edt-pages.github.io:443?security=tl
             //currentConfig.传输协议 = currentConfig.协议类型 === 'trojan' ? 'ws' : document.getElementById('transport').value;
             currentConfig.跳过证书验证 = document.getElementById('skipVerify').checked;
 
+            // 保存启用0RTT（如果字段存在）
+            if (currentConfig['启用0RTT'] !== undefined) {
+                currentConfig['启用0RTT'] = document.getElementById('enable0RTT').checked;
+            }
+
             await saveConfigToServer('config');
             // 更新网页标题
             document.title = `${currentConfig.优选订阅生成?.SUBNAME || 'edgetunnel'}设置页面 - 管理后台`;
@@ -5037,6 +5072,12 @@ vless://7b102311-43fd-4e8f-977e-8090623c101d@edt-pages.github.io:443?security=tl
                 document.getElementById('nodeUUID').value = currentConfig.UUID || '';
                 document.getElementById('protocol').value = currentConfig.协议类型 || 'vless';
                 document.getElementById('skipVerify').checked = currentConfig.跳过证书验证 || false;
+
+                // 重置启用0RTT（如果字段存在）
+                if (currentConfig['启用0RTT'] !== undefined) {
+                    document.getElementById('enable0RTT').checked = currentConfig['启用0RTT'] || false;
+                }
+
                 updateProtocol();
             } else if (section === 'proxy') {
                 const socksEnabled = currentConfig.反代?.SOCKS5?.启用;
