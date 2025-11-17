@@ -6447,11 +6447,40 @@ vless://7b102311-43fd-4e8f-977e-8090623c101d@edt-pages.github.io:443?security=tl
 
         // ==================== 在线优选相关函数 ====================
 
-        // IP打码函数 - 将IP最后一位替换为*
+        // IP打码函数 - 将IP中间段打码
+        function expandIPv6(ip) {
+            // 移除可能的[]包围
+            ip = ip.replace(/^\[|\]$/g, '');
+            // 如果没有::，直接split
+            if (!ip.includes('::')) {
+                return ip.split(':').map(part => part.padStart(4, '0')).join(':');
+            }
+            // 处理::
+            const parts = ip.split('::');
+            const left = parts[0] ? parts[0].split(':') : [];
+            const right = parts[1] ? parts[1].split(':') : [];
+            const missing = 8 - left.length - right.length;
+            const middle = new Array(missing).fill('0000');
+            const full = left.concat(middle).concat(right);
+            return full.map(part => part.padStart(4, '0')).join(':');
+        }
+
         function maskIP(ip) {
-            const parts = ip.split('.');
-            if (parts.length === 4) {
-                return parts[0] + '.*.*.' + parts[3];
+            if (!ip) return ip;
+            // 检查是否为IPv4
+            if (ip.includes('.') && !ip.includes(':')) {
+                // IPv4: 例如 192.168.1.1 -> 192.*.*.1
+                const parts = ip.split('.');
+                if (parts.length === 4) {
+                    return `${parts[0]}.*.${parts[2]}.${parts[3]}`;
+                }
+            } else if (ip.includes(':')) {
+                // IPv6: 扩展并打码中间部分
+                const expanded = expandIPv6(ip);
+                const parts = expanded.split(':');
+                if (parts.length === 8) {
+                    return `${parts[0]}:****:****:****:****:****:${parts[6]}:${parts[7]}`;
+                }
             }
             return ip;
         }
