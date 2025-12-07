@@ -4789,7 +4789,7 @@ vless://7b102311-43fd-4e8f-977e-8090623c101d@edt-pages.github.io:443?security=tl
                     </div>
                     <div class="latency-card-content">
                         <div class="latency-bars" id="bars-${siteName}">
-                            ${Array(10).fill().map(() => '<div class="latency-bar loading" style="background-color: rgba(250, 171, 65, 0.5);"></div>').join('')}
+                            ${Array(9).fill().map(() => '<div class="latency-bar loading" style="background-color: rgba(250, 171, 65, 0.5);"></div>').join('')}
                         </div>
                         <p class="latency-value" id="latency-${siteName}">准备测试...</p>
                     </div>
@@ -4832,8 +4832,8 @@ vless://7b102311-43fd-4e8f-977e-8090623c101d@edt-pages.github.io:443?security=tl
 
             if (!valueElement || !barsElement) return;
 
-            // 计算平均延迟：先过滤有效的延迟值（排除-1表示失败的情况）
-            const validLatencies = latencies.filter(l => l !== -1);
+            // 计算平均延迟：先过滤有效的延迟值（排除-1表示失败的情况、排除第一个测试结果）
+            const validLatencies = latencies.filter((l, index) => l !== -1 && index !== 0);
             let avgLatency = -1;
             
             if (validLatencies.length > 0) {
@@ -4854,7 +4854,7 @@ vless://7b102311-43fd-4e8f-977e-8090623c101d@edt-pages.github.io:443?security=tl
             }
 
             if (avgLatency === -1) {
-                valueElement.textContent = '连接失败';
+                valueElement.textContent = '-ms';
                 valueElement.style.color = 'var(--destructive)';
             } else {
                 valueElement.textContent = `${Math.round(avgLatency)}ms`;
@@ -4862,8 +4862,10 @@ vless://7b102311-43fd-4e8f-977e-8090623c101d@edt-pages.github.io:443?security=tl
             }
 
             const bars = barsElement.querySelectorAll('.latency-bar');
-            bars.forEach((bar, index) => {
-                const latency = latencies[index];
+            bars.forEach((bar, displayIndex) => {
+                // displayIndex 是显示的索引（0-8），实际测试索引需要加1
+                const actualIndex = displayIndex + 1;
+                const latency = latencies[actualIndex];
                 if (latency !== undefined) {
                     bar.style.backgroundColor = getLatencyColor(latency);
                     bar.title = latency === -1 ? '连接失败' : `${latency}ms`;
@@ -4882,12 +4884,12 @@ vless://7b102311-43fd-4e8f-977e-8090623c101d@edt-pages.github.io:443?security=tl
                 const siteName = site.name.toLowerCase().replace(/\s+/g, '-');
                 const latencies = [];
 
-                // 10次测试，每个间隔500ms
+                // 10次测试，每个间隔382ms
                 for (let i = 0; i < 10; i++) {
                     const latency = await testLatency(site);
                     latencies.push(latency);
                     updateLatencyDisplay(siteName, latencies);
-                    // 除了最后一次测试外，每次后延迟500ms
+                    // 除了最后一次测试外，每次后延迟382ms
                     if (i < 9) {
                         await new Promise(resolve => setTimeout(resolve, 382));
                     }
