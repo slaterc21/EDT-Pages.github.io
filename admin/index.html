@@ -3902,7 +3902,12 @@ vless://7b102311-43fd-4e8f-977e-8090623c101d@edt-pages.github.io:443?security=tl
 
                     <div class="form-group">
                         <label for="nodeUUID">UUID</label>
-                        <input type="text" id="nodeUUID" title="UUID" readonly>
+                        <input type="text" id="nodeUUID" title="用户ID" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nodePATH">PATH</label>
+                        <input type="text" id="nodePATH" title="节点路径" readonly>
                     </div>
 
                     <div class="form-group">
@@ -4979,6 +4984,7 @@ vless://7b102311-43fd-4e8f-977e-8090623c101d@edt-pages.github.io:443?security=tl
             document.getElementById('subName').value = currentConfig.优选订阅生成?.SUBNAME || '';
             document.getElementById('nodeHost').value = currentConfig.HOST || '';
             document.getElementById('nodeUUID').value = currentConfig.UUID || '';
+            document.getElementById('nodePATH').value = currentConfig.PATH || '';
             document.getElementById('protocol').value = currentConfig.协议类型 || 'vless';
             //document.getElementById('transport').value = currentConfig.传输协议 || 'ws';
             document.getElementById('skipVerify').checked = currentConfig.跳过证书验证 || false;
@@ -5950,6 +5956,7 @@ vless://7b102311-43fd-4e8f-977e-8090623c101d@edt-pages.github.io:443?security=tl
                 document.getElementById('subName').value = currentConfig.优选订阅生成?.SUBNAME || '';
                 document.getElementById('nodeHost').value = currentConfig.HOST || '';
                 document.getElementById('nodeUUID').value = currentConfig.UUID || '';
+                document.getElementById('nodePATH').value = currentConfig.PATH || '';
                 document.getElementById('protocol').value = currentConfig.协议类型 || 'vless';
                 document.getElementById('skipVerify').checked = currentConfig.跳过证书验证 || false;
 
@@ -7257,6 +7264,7 @@ vless://7b102311-43fd-4e8f-977e-8090623c101d@edt-pages.github.io:443?security=tl
                     document.getElementById('subName').value = currentConfig.优选订阅生成?.SUBNAME || '';
                     document.getElementById('nodeHost').value = currentConfig.HOST || '';
                     document.getElementById('nodeUUID').value = currentConfig.UUID || '';
+                    document.getElementById('nodePATH').value = currentConfig.PATH || '';
                     document.getElementById('protocol').value = currentConfig.协议类型 || 'vless';
                     document.getElementById('skipVerify').checked = currentConfig.跳过证书验证 || false;
                     updateProtocol();
