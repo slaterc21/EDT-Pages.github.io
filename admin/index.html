@@ -5886,9 +5886,9 @@ vless://7b102311-43fd-4e8f-977e-8090623c101d@edt-pages.github.io:443?security=tl
             const textarea = document.getElementById('hostsEditTextarea');
             const nodeHostInput = document.getElementById('nodeHost');
             
-            // 将文本框内容按行分割成数组，过滤空行
+            // 将文本框内容按行分割成数组，过滤空行，并清理域名格式
             const lines = textarea.value.split('\n')
-                .map(line => line.trim())
+                .map(line => cleanHostDomain(line.trim()))
                 .filter(line => line.length > 0);
             
             if (lines.length === 0) {
@@ -5909,6 +5909,27 @@ vless://7b102311-43fd-4e8f-977e-8090623c101d@edt-pages.github.io:443?security=tl
             markModified('config');
             
             showToast('域名列表已更新，请保存配置', 'success');
+        }
+
+        // 清理域名格式：去掉协议、路径、端口号，只保留纯域名
+        function cleanHostDomain(input) {
+            if (!input) return '';
+            
+            let domain = input;
+            
+            // 去掉协议前缀 (http:// 或 https://)
+            domain = domain.replace(/^https?:\/\//i, '');
+            
+            // 去掉路径部分（第一个 / 及之后的内容）
+            const slashIndex = domain.indexOf('/');
+            if (slashIndex !== -1) {
+                domain = domain.substring(0, slashIndex);
+            }
+            
+            // 去掉端口号（: 及之后的数字）
+            domain = domain.replace(/:\d+$/, '');
+            
+            return domain.trim();
         }
 
         async function saveSub() {
